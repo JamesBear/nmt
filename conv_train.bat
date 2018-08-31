@@ -1,0 +1,1 @@
+python -m nmt.nmt --src=question --tgt=answer --vocab_prefix=/tmp/nmt_data/vocab --train_prefix=/tmp/nmt_data/train --dev_prefix=/tmp/nmt_data/dev --test_prefix=/tmp/nmt_data/test --out_dir=/tmp/nmt_model --num_train_steps=12000 --steps_per_stats=100 --num_layers=2 --num_units=512 --dropout=0.2 --metrics=bleu --attention=scaled_luong
