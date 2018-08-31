@@ -3,12 +3,12 @@ import os
 from sklearn.model_selection import train_test_split
 
 # xiaohuangji config
-DATASET_PATH='xiaohuangji.txt'
+DATASET_PATH='D:\\tmp\\xiaohuangji.txt'
 QUES_INDEX=0
 ANS_INDEX=1
 SEPARATER='|'
 
-OUT_DIR='nmt_data'
+OUT_DIR='D:\\tmp\\nmt_data'
 QUES_ID='question'
 ANS_ID='answer'
 TRAIN_FILE_NAME='train'
@@ -55,6 +55,8 @@ def process(file_path):
         if question.strip() == '' or answer.strip() == '':
             #print('empty:', question, answer)
             continue
+        question = ' '.join(question)
+        answer = ' '.join(answer)
         questions.append(question)
         answers.append(answer)
     print('count:', len(questions), len(answers))
