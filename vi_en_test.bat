@@ -1,0 +1,1 @@
+python -m nmt.nmt --out_dir=/tmp/nmt_attention_model --inference_input_file=/tmp/my_infer_file.vi --inference_output_file=/tmp/nmt_attention_model/output_infer --vocab_prefix=/tmp/nmt_data/vocab --src=vi --tgt=en --ckpt=/tmp/nmt_model/best_bleu/translate.ckpt-12000
