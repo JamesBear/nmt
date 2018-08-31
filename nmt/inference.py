@@ -156,6 +156,7 @@ def single_worker_inference(sess,
   with infer_model.graph.as_default():
     while (True):
       line = input('Enter text to be translated:')
+      line = ' '.join(line)
       infer_data = [line]
       sess.run(
           infer_model.iterator.initializer,
