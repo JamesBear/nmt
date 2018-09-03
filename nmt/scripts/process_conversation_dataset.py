@@ -34,8 +34,10 @@ def save_list(file_path, list):
     out_str = '\n'.join(list)
     write_to_file(file_path, out_str)
 
-def word_seg(line):
-    words = jieba.cut(line)
+def word_seg(line, vocab):
+    words = list(jieba.cut(line))
+    for w in words:
+        vocab.add(w)
     line = ' '.join(words)
     return line
 
@@ -46,6 +48,7 @@ def process(file_path):
     content = get_file_content(file_path)
     questions = []
     answers = []
+    vocab = set()
     # get question list and answer list
     for line in content.splitlines():
         line = line.strip()
@@ -61,13 +64,11 @@ def process(file_path):
         if question.strip() == '' or answer.strip() == '':
             #print('empty:', question, answer)
             continue
-        question = word_seg(question)
-        answer = word_seg(answer)
+        question = word_seg(question, vocab)
+        answer = word_seg(answer, vocab)
         questions.append(question)
         answers.append(answer)
     print('count:', len(questions), len(answers))
-    # get vocab, naive way
-    vocab = set(content)
     to_be_removed = set()
     for c in vocab:
         if c != c.strip():
