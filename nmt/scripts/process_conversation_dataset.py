@@ -18,7 +18,7 @@ DEV_FILE_NAME='dev'
 VOCAB_FILE_NAME='vocab'
 DEFAULT_VOCAB=['<unk>','<s>','</s>']
 TRAIN_TEST_SPLIT_RATIO=0.05
-MAX_VOCAB_SIZE = 20000
+MAX_VOCAB_SIZE = 17000
 
 def get_file_content(file_path, encoding='utf-8'):
     f = open(file_path, 'r', encoding=encoding)
@@ -74,7 +74,8 @@ def process(file_path):
         answer = word_seg(answer, vocab)
         questions.append(question)
         answers.append(answer)
-    vocab_char = list(set(content))
+    vocab_char = set(content)
+    vocab_char_list = list(vocab_char)
     print('count:', len(questions), len(answers))
     vocab_dict = vocab
     #vocab = set(vocab.keys())
@@ -82,6 +83,7 @@ def process(file_path):
     vocab_dict_list.sort(key = lambda item:item[1], reverse=True)
     most_frequent_vocab = [item[0] for item in vocab_dict_list[:MAX_VOCAB_SIZE]]
     vocab = set(most_frequent_vocab)
+    vocab = vocab | vocab_char
 
     to_be_removed = set()
     for c in vocab:
@@ -95,7 +97,7 @@ def process(file_path):
     # Let's use separate vocab files for Q and A for now..
     save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+QUES_ID), DEFAULT_VOCAB + vocab)
     save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+ANS_ID), DEFAULT_VOCAB + vocab)
-    save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+'char-wise'), DEFAULT_VOCAB + vocab_char)
+    save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+'char-wise'), DEFAULT_VOCAB + vocab_char_list)
     save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+'dict'), vocab_dict_list)
     
 

@@ -27,7 +27,7 @@ from . import model as nmt_model
 from . import model_helper
 from .utils import misc_utils as utils
 from .utils import nmt_utils
-import jieba
+from .scripts.seg_words_with_vocab import WordSegmentation
 
 __all__ = ["load_data", "inference",
            "single_worker_inference", "multi_worker_inference"]
@@ -150,14 +150,19 @@ def single_worker_inference(sess,
                             hparams):
   """Inference with a single worker."""
   output_infer = inference_output_file
+  src_vocab_file = hparams.vocab_prefix + "." + hparams.src
 
   # Read data
   infer_data = load_data(inference_input_file, hparams)
+  print('inference input file:')
+  
+  word_seg = WordSegmentation(src_vocab_file)
 
   with infer_model.graph.as_default():
     while (True):
       line = input('Enter text to be translated:')
-      line = ' '.join(jieba.cut(line))
+      line = ' '.join(word_seg.Segment(line))
+      print('Segmented:', line)
       infer_data = [line]
       sess.run(
           infer_model.iterator.initializer,
