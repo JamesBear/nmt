@@ -18,6 +18,7 @@ DEV_FILE_NAME='dev'
 VOCAB_FILE_NAME='vocab'
 DEFAULT_VOCAB=['<unk>','<s>','</s>']
 TRAIN_TEST_SPLIT_RATIO=0.05
+MAX_VOCAB_SIZE = 20000
 
 def get_file_content(file_path, encoding='utf-8'):
     f = open(file_path, 'r', encoding=encoding)
@@ -37,7 +38,12 @@ def save_list(file_path, list):
 def word_seg(line, vocab):
     words = list(jieba.cut(line))
     for w in words:
-        vocab.add(w)
+        #vocab.add(w)
+        count = vocab.get(w)
+        if count == None:
+            vocab[w] = 1
+        else:
+            vocab[w] = count+1
     line = ' '.join(words)
     return line
 
@@ -48,7 +54,7 @@ def process(file_path):
     content = get_file_content(file_path)
     questions = []
     answers = []
-    vocab = set()
+    vocab = dict()
     # get question list and answer list
     for line in content.splitlines():
         line = line.strip()
@@ -68,7 +74,15 @@ def process(file_path):
         answer = word_seg(answer, vocab)
         questions.append(question)
         answers.append(answer)
+    vocab_char = list(set(content))
     print('count:', len(questions), len(answers))
+    vocab_dict = vocab
+    #vocab = set(vocab.keys())
+    vocab_dict_list = list(vocab_dict.items())
+    vocab_dict_list.sort(key = lambda item:item[1], reverse=True)
+    most_frequent_vocab = [item[0] for item in vocab_dict_list[:MAX_VOCAB_SIZE]]
+    vocab = set(most_frequent_vocab)
+
     to_be_removed = set()
     for c in vocab:
         if c != c.strip():
@@ -76,10 +90,14 @@ def process(file_path):
     vocab = list(vocab - to_be_removed)
     #print(vocab)
     print('vocab size:', len(vocab))
+    vocab_dict_list = [item[0]+':'+str(item[1]) for item in vocab_dict_list]
 
     # Let's use separate vocab files for Q and A for now..
     save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+QUES_ID), DEFAULT_VOCAB + vocab)
     save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+ANS_ID), DEFAULT_VOCAB + vocab)
+    save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+'char-wise'), DEFAULT_VOCAB + vocab_char)
+    save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+'dict'), vocab_dict_list)
+    
 
     questions_train, questions_test, answers_train, answers_test = train_test_split(questions, answers, test_size=TRAIN_TEST_SPLIT_RATIO, random_state=42, shuffle=True)
     questions_train, questions_dev, answers_train, answers_dev = train_test_split(questions_train, answers_train, test_size=TRAIN_TEST_SPLIT_RATIO, random_state=42, shuffle=True)
