@@ -1,6 +1,7 @@
 
 import os
 from sklearn.model_selection import train_test_split
+import jieba
 
 # xiaohuangji config
 DATASET_PATH='D:\\tmp\\xiaohuangji.txt'
@@ -33,6 +34,11 @@ def save_list(file_path, list):
     out_str = '\n'.join(list)
     write_to_file(file_path, out_str)
 
+def word_seg(line):
+    words = jieba.cut(line)
+    line = ' '.join(words)
+    return line
+
 def process(file_path):
     if not os.path.isdir(OUT_DIR):
         os.mkdir(OUT_DIR)
@@ -55,8 +61,8 @@ def process(file_path):
         if question.strip() == '' or answer.strip() == '':
             #print('empty:', question, answer)
             continue
-        question = ' '.join(question)
-        answer = ' '.join(answer)
+        question = word_seg(question)
+        answer = word_seg(answer)
         questions.append(question)
         answers.append(answer)
     print('count:', len(questions), len(answers))

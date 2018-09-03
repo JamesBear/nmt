@@ -27,6 +27,7 @@ from . import model as nmt_model
 from . import model_helper
 from .utils import misc_utils as utils
 from .utils import nmt_utils
+import jieba
 
 __all__ = ["load_data", "inference",
            "single_worker_inference", "multi_worker_inference"]
@@ -156,7 +157,7 @@ def single_worker_inference(sess,
   with infer_model.graph.as_default():
     while (True):
       line = input('Enter text to be translated:')
-      line = ' '.join(line)
+      line = ' '.join(jieba.cut(line))
       infer_data = [line]
       sess.run(
           infer_model.iterator.initializer,
