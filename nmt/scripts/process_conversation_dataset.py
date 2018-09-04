@@ -44,8 +44,21 @@ def word_seg(line, vocab):
             vocab[w] = 1
         else:
             vocab[w] = count+1
-    line = ' '.join(words)
-    return line
+    #line = ' '.join(words)
+    return words
+
+def resegment_sentences(sentence_list, vocab):
+    for i in range(len(sentence_list)):
+        words = sentence_list[i]
+        segs = []
+        for w in words:
+            if w in vocab:
+                segs.append(w)
+            else:
+                for c in w:
+                    segs.append(c)
+        sentence_list[i] = ' '.join(segs)
+        
 
 def process(file_path):
     if not os.path.isdir(OUT_DIR):
@@ -89,10 +102,14 @@ def process(file_path):
     for c in vocab:
         if c != c.strip():
             to_be_removed.add(c)
-    vocab = list(vocab - to_be_removed)
+    vocab = vocab - to_be_removed
     #print(vocab)
     print('vocab size:', len(vocab))
     vocab_dict_list = [item[0]+':'+str(item[1]) for item in vocab_dict_list]
+    resegment_sentences(questions, vocab)
+    resegment_sentences(answers, vocab)
+
+    vocab = list(vocab)
 
     # Let's use separate vocab files for Q and A for now..
     save_list(os.path.join(OUT_DIR, VOCAB_FILE_NAME+'.'+QUES_ID), DEFAULT_VOCAB + vocab)
