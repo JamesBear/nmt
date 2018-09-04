@@ -3,11 +3,17 @@ import os
 from sklearn.model_selection import train_test_split
 import jieba
 
-# xiaohuangji config
-DATASET_PATH='D:\\tmp\\xiaohuangji.txt'
-QUES_INDEX=0
-ANS_INDEX=1
-SEPARATER='|'
+# xiaohuangji.txt config
+# DATASET_PATH='D:\\tmp\\xiaohuangji.txt'
+# QUES_INDEX=0
+# ANS_INDEX=1
+# SEPARATER='|'
+
+# gossip.txt config
+DATASET_PATH='D:\\tmp\\gossip.txt'
+QUES_INDEX=1
+ANS_INDEX=2
+SEPARATER='#'
 
 OUT_DIR='D:\\tmp\\nmt_data'
 QUES_ID='question'
