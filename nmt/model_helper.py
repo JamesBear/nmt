@@ -272,7 +272,7 @@ def _create_pretrained_emb_from_txt(
     with tf.device(_get_embed_device(num_trainable_tokens)):
       emb_mat_var = tf.get_variable(
           "emb_mat_var", [num_trainable_tokens, emb_size])
-  return tf.concat([emb_mat_var, emb_mat_const], 0)
+  return tf.concat(0, [emb_mat_var, emb_mat_const])
 
 
 def _create_or_load_embed(embed_name, vocab_file, embed_file,
